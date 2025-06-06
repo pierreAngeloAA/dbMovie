@@ -14,3 +14,11 @@
   font-weight: 600;
   color: #e50914;
 }
+
+nav.navbar {
+  border-bottom: 3px solid red;
+}
+
+.section-title{
+  border-bottom: 3px solid gainsboro;
+}
