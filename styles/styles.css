@@ -22,3 +22,19 @@ nav.navbar {
 .section-title{
   border-bottom: 3px solid gainsboro;
 }
+
+.movie-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.movie-card {
+  width: 150px;
+  cursor: pointer;
+  position: relative;
+}
+.movie-card img {
+  width: 100%;
+  border-radius: 10px;
+}
