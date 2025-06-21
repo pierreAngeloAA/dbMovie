@@ -77,7 +77,7 @@ nav.navbar {
   z-index: 999;
 }
 
-.modal.hidden {
+.hidden {
   display: none;
 }
 
