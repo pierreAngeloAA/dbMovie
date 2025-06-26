@@ -1,7 +1,6 @@
 import { StorageHandler } from './storage.js';
+import { fetchMovies } from './api.js';
 
-const API_KEY = 'a193a1e35492fef05a07b98c1844f80c';
-const BASE_URL = 'https://api.themoviedb.org/3';
 const FAV = "favorites";
 
 // Referencias a los contenedores en el HTML
@@ -36,11 +35,6 @@ function createCard(movies, type_container){
       card.querySelector('img').addEventListener('click', () => showDetails(movie.id));
     type_container.appendChild(card);
   });
-}
-
-// Obtener películas desde la API
-function fetchMovies(endpoint) {
-  return fetch(`${BASE_URL}/movie/${endpoint}?api_key=${API_KEY}&language=es-ES`).then(res => res.json());
 }
 
 // Agregar película a favoritos
@@ -85,11 +79,9 @@ function showDetails(idMovie) {
   });
 }
 
-modal.addEventListener('click', () => {
-  modal.classList.add('hidden');
-});
+modal.addEventListener('click', () => modal.classList.add('hidden'));
 
+// Inicialización
 showfavorites();
-
 fetchMovies('popular').then(data => createCard(data.results, popularContainer));
 fetchMovies('top_rated').then(data => createCard(data.results, topContainer));
