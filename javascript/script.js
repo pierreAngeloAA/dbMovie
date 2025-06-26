@@ -1,3 +1,5 @@
+import { StorageHandler } from './storage.js';
+
 const API_KEY = 'a193a1e35492fef05a07b98c1844f80c';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const FAV = "favorites";
@@ -9,26 +11,8 @@ const topContainer = document.getElementById('top-movies');
 const modal = document.getElementById('movie-modal');
 const modalContent = document.getElementById('modal-details');
 
-function readLocalStorage (key = "") {
-  if(key === "")
-    return null;
-
-  return JSON.parse(localStorage.getItem(key));
-}
-
-function writeLocalStorage(key, data) {
-  if (key === "")
-    return null
-
-  if (typeof data !== 'string' ){
-    data = JSON.stringify(data);
-  }
-
-  localStorage.setItem(key, data);
-}
-
-// Objeto localStorage
-var movies_fav = readLocalStorage(FAV) || [];
+const storage = new StorageHandler(FAV);
+var movies_fav = storage.readLocalStorage();
 
 // funcion para crear cartas
 function createCard(movies, type_container){
@@ -63,7 +47,7 @@ function fetchMovies(endpoint) {
 function addToFavorites(movie){
   if (!movies_fav.some(item => item.id === movie.id)){
     movies_fav.push(movie);
-    writeLocalStorage(FAV, movies_fav);
+    storage.writeLocalStorage(movies_fav);
     showfavorites();
   }else{
     alert("La pelicula ya existe en tus favoritos");
@@ -81,7 +65,7 @@ function deleteFavorite(id){
   const index = movies_fav.findIndex(movie => movie.id === id);
   if (index !== -1) {
     movies_fav.splice(index, 1);
-    writeLocalStorage(FAV, movies_fav);
+    storage.writeLocalStorage(movies_fav);
     showfavorites();
   }
 }
