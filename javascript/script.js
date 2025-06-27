@@ -7,8 +7,8 @@ const FAV = "favorites";
 const favorite = document.getElementById('favorites-movies');
 const popularContainer = document.getElementById('popular-movies');
 const topContainer = document.getElementById('top-movies');
-const modal = document.getElementById('movie-modal');
-const modalContent = document.getElementById('modal-details');
+const modalMovie = document.getElementById('movie-modal');
+const modalDetail = document.getElementById('modal-details');
 
 const storage = new StorageHandler(FAV);
 var movies_fav = storage.readLocalStorage();
@@ -48,13 +48,13 @@ function addToFavorites(movie){
   }
 }
 
-//mostrar peliculas favoritas
+// Mostrar peliculas favoritas
 function showfavorites(){
   favorite.innerHTML = '';
   createCard(movies_fav, favorite);
 }
 
-//eliminar peliculas favoritas
+// Eliminar peliculas favoritas
 function deleteFavorite(id){
   const index = movies_fav.findIndex(movie => movie.id === id);
   if (index !== -1) {
@@ -64,10 +64,10 @@ function deleteFavorite(id){
   }
 }
 
-// mostrar detalles de peliculas
+// Mostrar detalles de peliculas
 function showDetails(idMovie) {
    fetchMovies(idMovie).then(movie => {
-    modalContent.innerHTML = `
+    modalDetail.innerHTML = `
         <h2 class="modal-title">${movie.title}</h2>
         <img class="modal-image" src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" />
         <p class="movie-overview">${movie.overview}</p>
@@ -75,13 +75,18 @@ function showDetails(idMovie) {
           ${movie.genres.map(genre => `<span class="genre">${genre.name}</span>`).join('')}
         </div>
     `;
-    modal.classList.remove('hidden');
+    modalMovie.classList.remove('hidden');
   });
 }
 
-modal.addEventListener('click', () => modal.classList.add('hidden'));
+modalMovie.addEventListener('click', (event) => {
+  if (event.target === modalMovie) {
+    modalMovie.classList.add('hidden');
+  }
+});
 
 // Inicialización
 showfavorites();
+
 fetchMovies('popular').then(data => createCard(data.results, popularContainer));
 fetchMovies('top_rated').then(data => createCard(data.results, topContainer));
