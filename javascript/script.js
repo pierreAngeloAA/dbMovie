@@ -1,5 +1,5 @@
 import { StorageHandler } from './storage.js';
-import { fetchMovies } from './api.js';
+import { fetchMovie, pupularMovies, topRatedMovies  } from './api.js';
 
 const FAV = "favorites";
 
@@ -66,7 +66,7 @@ function deleteFavorite(id){
 
 // Mostrar detalles de peliculas
 function showDetails(idMovie) {
-   fetchMovies(idMovie).then(movie => {
+   fetchMovie(idMovie).then(movie => {
     modalDetail.innerHTML = `
         <h2 class="modal-title">${movie.title}</h2>
         <img class="modal-image" src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" />
@@ -88,5 +88,5 @@ modalMovie.addEventListener('click', (event) => {
 // Inicialización
 showfavorites();
 
-fetchMovies('popular').then(data => createCard(data.results, popularContainer));
-fetchMovies('top_rated').then(data => createCard(data.results, topContainer));
+pupularMovies().then(data => createCard(data.results, popularContainer));
+topRatedMovies().then(data => createCard(data.results, topContainer));
