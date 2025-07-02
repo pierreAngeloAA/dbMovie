@@ -39,7 +39,8 @@ nav.navbar {
   border-radius: 10px;
 }
 
-.movie-card button {
+.fav-btn,
+.delete-btn {
   position: absolute;
   top: 5px;
   right: 5px;
@@ -47,14 +48,24 @@ nav.navbar {
   cursor: pointer;
   border-radius: 50%;
   padding: 3px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.movie-card .fav-btn {
+.fav-btn:active,
+.delete-btn:active {
+  transform: scale(0.99);
+}
+
+.fav-btn {
   background-color: white;
 }
 
-.movie-card .delete-btn {
+.delete-btn {
   background-color: #e50914;
+}
+
+#modal-details {
+  position: relative;
 }
 
 .modal-title {
@@ -85,7 +96,7 @@ nav.navbar {
   background-color: white;
   border-radius: 12px;
   padding: 1.5rem;
-  max-width: 400px;
+  max-width: 600px;
   width: 90%;
   max-height: 80vh;
   overflow-y: auto;
@@ -110,3 +121,21 @@ nav.navbar {
   border-radius: 15px;
   margin: 0.2rem;
 }
+
+.modal-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.9rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.modal-tagline {
+  font-size: 1rem;
+  color: #777;
+  margin: 0.5rem 0;
+  text-align: center;
+  font-style: italic;
+}
+
