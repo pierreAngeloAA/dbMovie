@@ -26,12 +26,12 @@ function createCard(movies, type_container){
       <button class="${btnClass}">${btnIcon}</button>
       `;
       card.querySelector(`.${btnClass}`).addEventListener('click', () => {
-        if (isFavorite) {
-          deleteFavorite(movie.id);
-        } else {
-          addToFavorites(movie);
-        }
-      });
+      if (isFavorite) {
+        deleteFavorite(movie.id);
+      } else {
+        addToFavorites(movie);
+      }
+    });
       card.querySelector('img').addEventListener('click', () => showDetails(movie.id));
     type_container.appendChild(card);
   });
@@ -66,15 +66,48 @@ function deleteFavorite(id){
 
 // Mostrar detalles de peliculas
 function showDetails(idMovie) {
-   fetchMovie(idMovie).then(movie => {
+  fetchMovie(idMovie).then(movie => {
+    const isFavorite = movies_fav.some(item => item.id === idMovie);
+    const btnClass = isFavorite ? 'delete-btn' : 'fav-btn';
+    const btnIcon = isFavorite ? '🤍' : '❤️';
+
     modalDetail.innerHTML = `
-        <h2 class="modal-title">${movie.title}</h2>
+      <div class="modal-img">
         <img class="modal-image" src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" />
-        <p class="movie-overview">${movie.overview}</p>
-        <div class="movie-genres">
-          ${movie.genres.map(genre => `<span class="genre">${genre.name}</span>`).join('')}
-        </div>
+        <button class="${btnClass}">${btnIcon}</button>
+      </div>
+
+      <h2 class="modal-title">${movie.title}</h2>
+      <p class="modal-tagline"><em>${movie.tagline || ''}</em></p>
+      
+      <div class="modal-info">
+        <span><strong>Fecha de estreno:</strong> ${movie.release_date}</span>
+        <span><strong>Duración:</strong> ${movie.runtime} min</span>
+        <span><strong>Idioma original:</strong> ${movie.original_language.toUpperCase()}</span>
+        <span><strong>Estado:</strong> ${movie.status}</span>
+        <span><strong>Calificación:</strong> ⭐ ${movie.vote_average.toFixed(1)} / 10</span>
+      </div>
+      
+      <div class="movie-genres">
+        ${movie.genres.map(genre => `<span class="genre">${genre.name}</span>`).join('')}
+      </div>
+
+      <p class="movie-overview">${movie.overview}</p>
     `;
+
+    const modalFavBtn = modalDetail.querySelector(`.${btnClass}`);
+    modalFavBtn.addEventListener('click', () => {
+      if (isFavorite) {
+        deleteFavorite(movie.id);
+        modalFavBtn.className = 'fav-btn';      
+        modalFavBtn.innerHTML = '❤️';
+      } else {
+        addToFavorites(movie);
+        modalFavBtn.className = 'delete-btn';
+        modalFavBtn.innerHTML = '🤍';
+      }
+      
+    });
     modalMovie.classList.remove('hidden');
   });
 }
