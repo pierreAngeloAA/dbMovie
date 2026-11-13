@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,13 +19,13 @@
         <div class="collapse navbar-collapse" id="menu">
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link" href="#">Popular Movies</a>
+              <a class="nav-link" href="#popular">Popular Movies</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Top Rated</a>
+              <a class="nav-link" href="#top-rated">Top Rated</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link"  href="#">Favorite</a>
+              <a class="nav-link" href="#favorites">Favorite</a>
             </li>
           </ul>
         </div>
@@ -34,17 +34,17 @@
   </header>
 
   <main class="container">
-    <section class="mt-4">
+    <section id="favorites" class="mt-4">
       <h5 class="section-title">My Favorites.</h5>
       <div id="favorites-movies" class="movie-grid"></div>
     </section>
 
-    <section class="mt-4">
+    <section id="popular" class="mt-4">
       <h5 class="section-title">🎬 Popular Movies.</h5>
       <div id="popular-movies" class="movie-grid"></div>
     </section>
 
-    <section class="mt-4">
+    <section id="top-rated" class="mt-4">
       <h5 class="section-title">⭐ Top Rated.</h5>
       <div id="top-movies" class="movie-grid"></div>
     </section>

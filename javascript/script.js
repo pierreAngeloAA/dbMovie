@@ -1,5 +1,5 @@
 import { StorageHandler } from './storage.js';
-import { fetchMovie, pupularMovies, topRatedMovies  } from './api.js';
+import { fetchMovie, popularMovies, topRatedMovies } from './api.js';
 
 const FAV = "favorites";
 
@@ -11,7 +11,25 @@ const modalMovie = document.getElementById('movie-modal');
 const modalDetail = document.getElementById('modal-details');
 
 const storage = new StorageHandler(FAV);
-var movies_fav = storage.readLocalStorage();
+let moviesFav = storage.readLocalStorage();
+
+const POSTER_URL = 'https://image.tmdb.org/t/p/w500';
+
+// Escapa texto que viene de la API antes de meterlo en innerHTML
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text ?? '';
+  return div.innerHTML;
+}
+
+function posterSrc(movie) {
+  return movie.poster_path ? `${POSTER_URL}${movie.poster_path}` : 'https://placehold.co/500x750?text=Sin+imagen';
+}
+
+function showError(container, error) {
+  console.error(error);
+  container.innerHTML = '<p class="text-danger">No se pudieron cargar las películas. Revisa tu API key en javascript/config.js.</p>';
+}
 
 // funcion para crear cartas
 function createCard(movies, type_container){
@@ -22,7 +40,7 @@ function createCard(movies, type_container){
     const card = document.createElement('div');
     card.classList.add('movie-card');
     card.innerHTML = `
-      <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}"/>
+      <img src="${posterSrc(movie)}" alt="${escapeHtml(movie.title)}" loading="lazy"/>
       <button class="${btnClass}">${btnIcon}</button>
       `;
       card.querySelector(`.${btnClass}`).addEventListener('click', () => {
@@ -39,9 +57,9 @@ function createCard(movies, type_container){
 
 // Agregar película a favoritos
 function addToFavorites(movie){
-  if (!movies_fav.some(item => item.id === movie.id)){
-    movies_fav.push(movie);
-    storage.writeLocalStorage(movies_fav);
+  if (!moviesFav.some(item => item.id === movie.id)){
+    moviesFav.push(movie);
+    storage.writeLocalStorage(moviesFav);
     showfavorites();
   }else{
     alert("La pelicula ya existe en tus favoritos");
@@ -51,15 +69,15 @@ function addToFavorites(movie){
 // Mostrar peliculas favoritas
 function showfavorites(){
   favorite.innerHTML = '';
-  createCard(movies_fav, favorite);
+  createCard(moviesFav, favorite);
 }
 
 // Eliminar peliculas favoritas
 function deleteFavorite(id){
-  const index = movies_fav.findIndex(movie => movie.id === id);
+  const index = moviesFav.findIndex(movie => movie.id === id);
   if (index !== -1) {
-    movies_fav.splice(index, 1);
-    storage.writeLocalStorage(movies_fav);
+    moviesFav.splice(index, 1);
+    storage.writeLocalStorage(moviesFav);
     showfavorites();
   }
 }
@@ -67,32 +85,32 @@ function deleteFavorite(id){
 // Mostrar detalles de peliculas
 function showDetails(idMovie) {
   fetchMovie(idMovie).then(movie => {
-    const isFavorite = movies_fav.some(item => item.id === idMovie);
+    const isFavorite = moviesFav.some(item => item.id === idMovie);
     const btnClass = isFavorite ? 'delete-btn' : 'fav-btn';
     const btnIcon = isFavorite ? '🤍' : '❤️';
 
     modalDetail.innerHTML = `
       <div class="modal-img">
-        <img class="modal-image" src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" />
+        <img class="modal-image" src="${posterSrc(movie)}" alt="${escapeHtml(movie.title)}" />
         <button class="${btnClass}">${btnIcon}</button>
       </div>
 
-      <h2 class="modal-title">${movie.title}</h2>
-      <p class="modal-tagline"><em>${movie.tagline || ''}</em></p>
+      <h2 class="modal-title">${escapeHtml(movie.title)}</h2>
+      <p class="modal-tagline"><em>${escapeHtml(movie.tagline)}</em></p>
       
       <div class="modal-info">
-        <span><strong>Fecha de estreno:</strong> ${movie.release_date}</span>
+        <span><strong>Fecha de estreno:</strong> ${escapeHtml(movie.release_date)}</span>
         <span><strong>Duración:</strong> ${movie.runtime} min</span>
         <span><strong>Idioma original:</strong> ${movie.original_language.toUpperCase()}</span>
-        <span><strong>Estado:</strong> ${movie.status}</span>
+        <span><strong>Estado:</strong> ${escapeHtml(movie.status)}</span>
         <span><strong>Calificación:</strong> ⭐ ${movie.vote_average.toFixed(1)} / 10</span>
       </div>
       
       <div class="movie-genres">
-        ${movie.genres.map(genre => `<span class="genre">${genre.name}</span>`).join('')}
+        ${movie.genres.map(genre => `<span class="genre">${escapeHtml(genre.name)}</span>`).join('')}
       </div>
 
-      <p class="movie-overview">${movie.overview}</p>
+      <p class="movie-overview">${escapeHtml(movie.overview)}</p>
     `;
 
     const modalFavBtn = modalDetail.querySelector(`.${btnClass}`);
@@ -109,7 +127,7 @@ function showDetails(idMovie) {
       
     });
     modalMovie.classList.remove('hidden');
-  });
+  }).catch(error => console.error(error));
 }
 
 modalMovie.addEventListener('click', (event) => {
@@ -121,5 +139,9 @@ modalMovie.addEventListener('click', (event) => {
 // Inicialización
 showfavorites();
 
-pupularMovies().then(data => createCard(data.results, popularContainer));
-topRatedMovies().then(data => createCard(data.results, topContainer));
+popularMovies()
+  .then(data => createCard(data.results, popularContainer))
+  .catch(error => showError(popularContainer, error));
+topRatedMovies()
+  .then(data => createCard(data.results, topContainer))
+  .catch(error => showError(topContainer, error));
