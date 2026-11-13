@@ -1,4 +1,5 @@
-const API_KEY = 'a193a1e35492fef05a07b98c1844f80c';
+import { TMDB_API_KEY as API_KEY } from './config.js';
+
 const BASE_URL = 'https://api.themoviedb.org/3';
 
 export function pupularMovies() {
